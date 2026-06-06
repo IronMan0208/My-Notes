@@ -19,7 +19,10 @@ A modern Android Notes App built using Kotlin and Jetpack Compose. This applicat
 
 ## Screenshots
 
-![img.png](img.png)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/030a86a3-a0e6-492b-8004-2421754673c8" width="250">
+</p>
+
 
 ## Installation
 
