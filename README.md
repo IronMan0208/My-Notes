@@ -46,4 +46,4 @@ git clone https://github.com/IronMan0208/Notes-App.git
 
 ## Author
 
-Iron Man
+Ajay Kumar
