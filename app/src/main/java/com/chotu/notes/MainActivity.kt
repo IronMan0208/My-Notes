@@ -32,6 +32,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
@@ -41,12 +42,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.chotu.notes.data.database.DatabaseProvider
+import com.chotu.notes.repository.NoteRepository
 import com.chotu.notes.ui.theme.NotesTheme
+import com.chotu.notes.viewmodel.NotesViewModel
+import com.chotu.notes.viewmodel.NotesViewModelFactory
 import kotlin.math.round
 
 class MainActivity : ComponentActivity() {
@@ -79,8 +86,26 @@ fun NoteScreen(modifier: Modifier = Modifier) {
         mutableStateOf("")
     }
 
-    val notes = remember {
-        mutableStateListOf<Note>()
+    val context = LocalContext.current
+
+    val database = remember {
+        DatabaseProvider.getDatabase(context)
+    }
+
+    val repository = remember {
+        NoteRepository(database.noteDao())
+    }
+
+    val factory = remember {
+        NotesViewModelFactory(repository)
+    }
+
+    val viewModel: NotesViewModel = viewModel(
+        factory = factory
+    )
+
+    LaunchedEffect(Unit) {
+        viewModel.loadNotes()
     }
 
     Box(
@@ -106,7 +131,9 @@ fun NoteScreen(modifier: Modifier = Modifier) {
                 "My Notes", fontSize = 32.sp, fontWeight = FontWeight.ExtraBold, color = Color.White
             )
             Text(
-                "${notes.size} notes", fontSize = 14.sp, color = Color.White.copy(alpha = 0.8f)
+                "${viewModel.notes.size} notes",
+                fontSize = 14.sp,
+                color = Color.White.copy(alpha = 0.8f)
             )
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -141,7 +168,7 @@ fun NoteScreen(modifier: Modifier = Modifier) {
                     Button(
                         onClick = {
                             if (noteText.isNotEmpty()) {
-                                notes.add(Note(noteText))
+                                viewModel.insertNote(noteText)
                                 noteText = ""
                             }
                         },
@@ -175,7 +202,7 @@ fun NoteScreen(modifier: Modifier = Modifier) {
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(notes.size) { index ->
+                items(viewModel.notes.size) { index ->
                     val cardColor = noteColors[index % noteColors.size]
 
                     Card(
@@ -210,7 +237,7 @@ fun NoteScreen(modifier: Modifier = Modifier) {
                             Spacer(modifier = Modifier.width(12.dp))
 
                             Text(
-                                notes[index].title,
+                                viewModel.notes[index].title,
                                 modifier = Modifier.weight(1f),
                                 maxLines = 2,
                                 fontSize = 15.sp,
@@ -221,7 +248,11 @@ fun NoteScreen(modifier: Modifier = Modifier) {
 
                             // ✨ Delete icon button (clean look)
                             IconButton(
-                                onClick = { notes.removeAt(index) },
+                                onClick = {
+                                    viewModel.deleteNote(
+                                        viewModel.notes[index]
+                                    )
+                                },
                                 modifier = Modifier
                                     .size(36.dp)
                                     .background(
