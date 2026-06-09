@@ -31,7 +31,14 @@ A modern Android Notes Application built with **Kotlin**, **Jetpack Compose**, a
 
 ---
 
+<<<<<<< HEAD
 ## 📂 Project Structure
+=======
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/030a86a3-a0e6-492b-8004-2421754673c8" width="250">
+</p>
+
+>>>>>>> c3481f1ae26c71e7c2fe136d37280928e0bc5681
 
 ```text
 com.chotu.notes
@@ -76,6 +83,7 @@ Run the application on an Android Emulator or Physical Device.
 
 ---
 
+<<<<<<< HEAD
 ## 🧠 What I Learned
 
 * Jetpack Compose UI Development
@@ -115,3 +123,6 @@ Aspiring Android Developer focused on building modern Android applications using
 ## ⭐ Support
 
 If you found this project helpful, consider giving it a ⭐ on GitHub.
+=======
+Ajay Kumar
+>>>>>>> c3481f1ae26c71e7c2fe136d37280928e0bc5681
